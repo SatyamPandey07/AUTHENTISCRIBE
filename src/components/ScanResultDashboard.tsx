@@ -7,8 +7,18 @@ import React, { useState } from "react";
 import { AnalysisResult, SentenceAnalysis, CitationSuggestion } from "../types";
 import { 
   CheckCircle, AlertTriangle, HelpCircle, Copy, Check, Sparkles, 
-  ChevronRight, BookOpen, FileSpreadsheet, RotateCcw, AlertCircle, Info, Loader2
+  ChevronRight, BookOpen, FileSpreadsheet, RotateCcw, AlertCircle, Info, Loader2,
+  TrendingUp
 } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip
+} from "recharts";
 
 interface FleschKincaidScaleItem {
   min: number;
@@ -109,6 +119,47 @@ const getFleschDetails = (score: number): FleschKincaidScaleItem => {
   return FLESCH_KINCAID_SCALE[FLESCH_KINCAID_SCALE.length - 1];
 };
 
+interface TooltipPayloadItem {
+  payload: {
+    index: number;
+    text: string;
+    ai: number;
+    human: number;
+  };
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+}
+
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-slate-900 border border-slate-800 text-white p-3 rounded shadow-lg text-xs max-w-sm space-y-1.5 font-sans" id="recharts-custom-tooltip">
+        <p className="font-bold text-[10px] text-slate-400 font-mono uppercase tracking-wider">
+          Sentence #{data.index}
+        </p>
+        <p className="italic text-slate-200 line-clamp-2">
+          "{data.text}"
+        </p>
+        <div className="pt-1.5 border-t border-slate-800 flex justify-between gap-6">
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-rose-500" />
+            <span className="text-rose-300">AI: <strong>{data.ai}%</strong></span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-emerald-300">Human: <strong>{data.human}%</strong></span>
+          </span>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 interface ScanResultDashboardProps {
   result: AnalysisResult;
   onSentenceReplaced: (originalSentenceText: string, newText: string) => void;
@@ -126,8 +177,27 @@ export default function ScanResultDashboard({
   const [customSuggestions, setCustomSuggestions] = useState<string[] | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<string | null>(null); // e.g., "apa-0", "mla-0"
   const [customRephraseLoading, setCustomRephraseLoading] = useState(false);
+  const [copiedFullText, setCopiedFullText] = useState(false);
+
+  const handleCopyFullText = () => {
+    if (!result.sentences || result.sentences.length === 0) return;
+    const fullText = result.sentences.map(s => s.text).join(" ");
+    navigator.clipboard.writeText(fullText);
+    setCopiedFullText(true);
+    setTimeout(() => setCopiedFullText(false), 2000);
+  };
 
   const fleschDetails = getFleschDetails(result.readability.score);
+
+  const chartData = (result.sentences || []).map((sentence, idx) => {
+    return {
+      name: `S${idx + 1}`,
+      index: idx + 1,
+      ai: Math.round(sentence.aiProbability),
+      human: Math.round(100 - sentence.aiProbability),
+      text: sentence.text
+    };
+  });
 
   const getScoreColor = (score: number, inverse: boolean = false) => {
     // If inverse, high is BAD (e.g. AI / Plagiarism scores)
@@ -302,12 +372,96 @@ export default function ScanResultDashboard({
 
       </div>
 
-      {/* 2. Interactive Highlights & Sentence Recomposer Panel */}
+      {/* 2. Stylometric Integrity Flow Trend */}
+      <div className="bg-white border border-slate-200 dark:border-slate-800 rounded p-5 shadow-sm" id="trend-analysis-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-slate-700 dark:text-slate-200 font-mono flex items-center gap-2">
+              <span className="p-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded border border-indigo-100 dark:border-indigo-800/40">
+                <TrendingUp className="h-4 w-4 animate-pulse" />
+              </span>
+              <span>Linguistic Integrity & Stylometry Distribution Map</span>
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 font-sans">
+              Analyzes and correlates synthetically generated structural flow patterns vs. human authenticity levels sentence-by-sentence.
+            </p>
+          </div>
+          <div className="flex items-center space-x-3 text-[10px] font-mono uppercase tracking-wider font-bold">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+              <span className="text-slate-500">AI Probability</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              <span className="text-slate-500">Human Authenticity</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="h-72 w-full mt-4" id="stylometry-recharts-container">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={chartData}
+              margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorAi" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="colorHuman" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" className="dark:stroke-slate-800" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'JetBrains Mono' }} 
+                axisLine={false} 
+                tickLine={false} 
+              />
+              <YAxis 
+                domain={[0, 100]} 
+                tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'JetBrains Mono' }} 
+                axisLine={false} 
+                tickLine={false} 
+                tickFormatter={(value) => `${value}%`} 
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Line 
+                type="monotone" 
+                dataKey="ai" 
+                stroke="#f43f5e" 
+                strokeWidth={2.5} 
+                dot={chartData.length < 40 ? { r: 3, stroke: '#f43f5e', strokeWidth: 1, fill: '#fff' } : false}
+                activeDot={{ r: 6, strokeWidth: 0 }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="human" 
+                stroke="#10b981" 
+                strokeWidth={2.5} 
+                dot={chartData.length < 40 ? { r: 3, stroke: '#10b981', strokeWidth: 1, fill: '#fff' } : false}
+                activeDot={{ r: 6, strokeWidth: 0 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="flex items-start space-x-2 text-[10px] text-slate-400 mt-3 font-mono leading-relaxed" id="trend-analysis-footnote">
+          <Info className="h-3.5 w-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
+          <p>
+            Hovering over points displays the source sentence slice. Spikes above <strong className="text-rose-500">70% AI Probability</strong> indicate highly structured/monotonous phrasing that our engine flags as potentially machine-assisted. Use the segment navigator below to rephrase flagged slices.
+          </p>
+        </div>
+      </div>
+
+      {/* 3. Interactive Highlights & Sentence Recomposer Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" id="interactive-editor-section">
         
         {/* Left Side: Highlighted Text Viewer */}
         <div className="bg-white border border-slate-200 rounded p-5 shadow-sm lg:col-span-2">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
             <div>
               <h2 className="text-xs font-bold uppercase tracking-widest text-slate-700 font-mono">
                 Interactive Document Auditor
@@ -316,20 +470,33 @@ export default function ScanResultDashboard({
                 Click any highlighted sentence to open the original recomposer and rephrase it instantly.
               </p>
             </div>
-            {/* Quick Legend */}
-            <div className="flex items-center space-x-3 text-[10px] font-mono uppercase tracking-wider font-bold">
-              <div className="flex items-center space-x-1.5">
-                <span className="h-2.5 w-2.5 bg-rose-400 border border-rose-300 rounded-sm" />
-                <span className="text-slate-500">AI</span>
+            <div className="flex items-center space-x-4 flex-wrap gap-y-2">
+              {/* Quick Legend */}
+              <div className="flex items-center space-x-3 text-[10px] font-mono uppercase tracking-wider font-bold">
+                <div className="flex items-center space-x-1.5">
+                  <span className="h-2.5 w-2.5 bg-rose-400 border border-rose-300 rounded-sm" />
+                  <span className="text-slate-500">AI</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <span className="h-2.5 w-2.5 bg-amber-400 border border-amber-300 rounded-sm" />
+                  <span className="text-slate-500">Plagiarized</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <span className="h-2.5 w-2.5 bg-emerald-400 border border-emerald-300 rounded-sm" />
+                  <span className="text-slate-500">Human</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-1.5">
-                <span className="h-2.5 w-2.5 bg-amber-400 border border-amber-300 rounded-sm" />
-                <span className="text-slate-500">Plagiarized</span>
-              </div>
-              <div className="flex items-center space-x-1.5">
-                <span className="h-2.5 w-2.5 bg-emerald-400 border border-emerald-300 rounded-sm" />
-                <span className="text-slate-500">Human</span>
-              </div>
+
+              {/* Copy Button */}
+              <button
+                onClick={handleCopyFullText}
+                className="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white hover:text-slate-100 rounded-sm transition-colors flex items-center space-x-1 text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-3xs"
+                title="Copy clean processed text to clipboard"
+                id="copy-scanned-document-btn"
+              >
+                {copiedFullText ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                <span>{copiedFullText ? "Copied!" : "Copy Full Text"}</span>
+              </button>
             </div>
           </div>
 

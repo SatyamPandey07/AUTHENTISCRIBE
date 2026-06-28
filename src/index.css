@@ -7,3 +7,101 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+/* --- Dark Mode Custom Overrides --- */
+.dark {
+  color-scheme: dark;
+}
+
+.dark #app-root {
+  background-color: #020617 !important; /* slate-950 */
+  color: #f8fafc !important; /* slate-50 */
+}
+
+/* Background overrides */
+.dark .bg-white {
+  background-color: #0f172a !important; /* slate-900 */
+}
+
+.dark .bg-slate-50,
+.dark .bg-slate-50\/50,
+.dark .bg-slate-50\/45,
+.dark .bg-slate-50\/10,
+.dark .bg-slate-50\/20 {
+  background-color: #020617 !important; /* slate-950 */
+}
+
+.dark .bg-slate-100 {
+  background-color: #1e293b !important; /* slate-800 */
+}
+
+/* Border overrides */
+.dark .border-slate-200,
+.dark .border-slate-100,
+.dark .border-slate-150,
+.dark .border-slate-250 {
+  border-color: #1e293b !important; /* slate-800 */
+}
+
+.dark .divide-slate-100 > * + * {
+  border-color: #1e293b !important;
+}
+
+/* Text overrides */
+.dark .text-slate-900 {
+  color: #f1f5f9 !important; /* slate-100 */
+}
+
+.dark .text-slate-800 {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+.dark .text-slate-700 {
+  color: #cbd5e1 !important; /* slate-300 */
+}
+
+.dark .text-slate-600 {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+.dark .text-slate-500 {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Form element overrides */
+.dark textarea,
+.dark input,
+.dark select {
+  background-color: #020617 !important; /* slate-950 */
+  color: #f1f5f9 !important; /* slate-100 */
+  border-color: #1e293b !important; /* slate-800 */
+}
+
+.dark textarea::placeholder,
+.dark input::placeholder {
+  color: #475569 !important; /* slate-600 */
+}
+
+/* Button & interactive hover overrides */
+.dark .hover\:bg-slate-50:hover {
+  background-color: #1e293b !important; /* slate-800 */
+}
+
+.dark .hover\:bg-slate-100:hover {
+  background-color: #1e293b !important; /* slate-800 */
+}
+
+.dark .hover\:text-slate-900:hover {
+  color: #ffffff !important;
+}
+
+/* Custom modal overrides to ensure dialog overlays look clean in dark mode */
+.dark #citation-assistant-dialog,
+.dark #pdf-preview-fullscreen-dialog {
+  background-color: #0f172a !important; /* slate-900 */
+  border-color: #1e293b !important;
+}
+.dark #citation-assistant-modal-footer {
+  background-color: #020617 !important;
+  border-color: #1e293b !important;
+}
+

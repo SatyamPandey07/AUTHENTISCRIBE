@@ -19,6 +19,7 @@ import ReferenceFinder from "./components/ReferenceFinder";
 import AISummarizer from "./components/AISummarizer";
 import WritingAssistant from "./components/WritingAssistant";
 import CitationAssistantModal from "./components/CitationAssistantModal";
+import PDFPreview from "./components/PDFPreview";
 
 import { exportAnalysisToPDF } from "./utils/pdfGenerator";
 
@@ -33,6 +34,37 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>("SCANNER");
   const [textToScan, setTextToScan] = useState<string>("");
   const [stagedFile, setStagedFile] = useState<{ name: string; size: number; type: string; data?: string } | null>(null);
+  
+  // Theme state & persistence
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem("authentiscribe_theme");
+      if (saved) {
+        return saved === "dark";
+      }
+    } catch (e) {
+      console.error("Failed to load theme preference:", e);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    try {
+      if (isDarkMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("authentiscribe_theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("authentiscribe_theme", "light");
+      }
+    } catch (e) {
+      console.error("Failed to persist theme preference:", e);
+    }
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
   
   // Results
   const [scanResult, setScanResult] = useState<AnalysisResult | null>(null);
@@ -380,7 +412,13 @@ export default function App() {
     <div className="min-h-screen bg-slate-50/50 text-slate-900 font-sans flex flex-col" id="app-root">
       
       {/* Navigation Header */}
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} hasApiKey={hasApiKey} />
+      <Header 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        hasApiKey={hasApiKey} 
+        isDarkMode={isDarkMode} 
+        toggleDarkMode={toggleDarkMode} 
+      />
 
       {/* Main Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -461,6 +499,11 @@ export default function App() {
                       onClear={handleClearFile} 
                       stagedFile={stagedFile} 
                     />
+
+                    {/* PDF Preview Section (only show if file is a staged PDF) */}
+                    {stagedFile && stagedFile.type === "application/pdf" && stagedFile.data && (
+                      <PDFPreview stagedFile={stagedFile} />
+                    )}
 
                     {/* Text area paste editor (only show if file is not an un-extracted PDF) */}
                     {(!stagedFile || stagedFile.type !== "application/pdf") && (
