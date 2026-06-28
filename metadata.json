@@ -1,0 +1,6 @@
+{
+  "name": "AI Plagiarism Checker & Humanizer",
+  "description": "A comprehensive platform to detect AI plagiarism, convert machine-generated content to human-written text, rephrase for originality, and analyze document readability with inline editing tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
