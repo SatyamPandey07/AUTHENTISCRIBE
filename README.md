@@ -1,4 +1,4 @@
-# 🖋️ AuthentiScribe: AI Integrity & Linguistic Intelligence Workspace
+# AuthentiScribe: AI Integrity & Linguistic Intelligence Workspace
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![React](https://img.shields.io/badge/Frontend-React%2018-blue?logo=react&logoColor=white)](https://react.dev/)
@@ -12,7 +12,7 @@
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 ### 🔍 Plagiarism & AI Detection Suite
 *   **Multi-Engine Analysis:** Audits text and documents to detect synthetic AI generation markers and plagiarism probabilities.
@@ -36,7 +36,7 @@
 
 ---
 
-## 📸 Visual Walkthrough
+## Visual Walkthrough
 
 ### 📊 Scan & Integrity Dashboard
 The main dashboard visualizes readability metrics, AI generation probability, and style metrics with a real-time sentence-by-sentence color-coded breakdown.
@@ -52,7 +52,7 @@ Detailed spelling, punctuation, and structural review tool for quick grammar fix
 
 ---
 
-## ⚙️ Architecture & Data Flow
+## Architecture & Data Flow
 
 AuthentiScribe processes inputs through a dual-channel text/document ingestion pipeline, utilizing server-side extraction and Gemini structured JSON outputs.
 
@@ -82,7 +82,7 @@ graph TD
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 *   **Frontend Framework:** React 18 with TypeScript and Vite
 *   **Styling:** Tailwind CSS (Fluid layout transitions and adaptive dark/light color palette)
@@ -93,7 +93,7 @@ graph TD
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### 1. Prerequisites
 Ensure you have **Node.js** (v18 or higher) and **npm** installed on your system.
@@ -132,7 +132,7 @@ npm start
 
 ---
 
-## 📂 Project Directory Structure
+## Project Directory Structure
 
 ```
 AUTHENTISCRIBE/
@@ -166,6 +166,6 @@ AUTHENTISCRIBE/
 
 ---
 
-## 🛡️ License
+## License
 
 Distributed under the **Apache-2.0** License. See `LICENSE` for more information.
