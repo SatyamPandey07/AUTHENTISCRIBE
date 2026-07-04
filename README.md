@@ -14,13 +14,39 @@
 
 ## Product Requirements Document (PRD)
 
-> **About this Document:** This Product Requirements Document (PRD) defines the core specifications, target personas, technical architecture, and roadmap for the AuthentiScribe writing workspace. It details the design to keep AI detection, plagiarism audit, and humanized rewriting within a single unified workspace.
+> **About this Document:** This Product Requirements Document (PRD) outlines the target personas, specifications, and technical roadmap for AuthentiScribe. It details the design to keep AI detection, plagiarism audit, and humanized rewriting within a single unified workspace.
 
 👉 **[View Full PRD Document in New Tab (PDF)](assets/AUTHENTISCRIBE_PRD.pdf)**
 
-<iframe src="assets/AUTHENTISCRIBE_PRD.pdf" width="100%" height="600px" style="border: none; border-radius: 8px;">
-  <p>Your browser does not support PDF embeds. You can download and read the document directly: <a href="assets/AUTHENTISCRIBE_PRD.pdf" target="_blank">Open PRD PDF</a>.</p>
-</iframe>
+<details>
+<summary><b>📄 Click to expand a scrollable text preview of the PRD</b></summary>
+
+### Document Metadata
+*   **Document Title:** AuthentiScribe Product Requirements Document
+*   **Version:** 1.0 (Draft)
+*   **Date:** July 4, 2026
+*   **Author:** Product Team
+*   **License:** Apache-2.0
+
+### 1. Overview & Objectives
+AuthentiScribe is a full-stack writing workspace built to check whether text is original, and if it's not, remediate it. It is aimed at educators, researchers, and professional writers who currently juggle separate tools for plagiarism checking, AI detection, rewriting, and citations.
+
+*   **Integrate Tools:** Bring AI detection, plagiarism analysis, rewriting, and citations together.
+*   **Linguistic Details:** Show perplexity, burstiness, and sentence-level classifications.
+*   **Remediation:** Paraphrase and humanize flagged content directly inside the workspace.
+
+### 2. Feature Scope
+*   **Detection Suite:** Multi-engine analysis on text, DOCX, and PDF with highlight viewer and Recharts stylometric graphs.
+*   **Humanizer Workspace:** Context-aware rephrasing presets (Academic, Business, Casual, Narrative) with adjustable rewrite intensity.
+*   **Editorial Toolkit:** AI proofreader, multi-lingual translator, reference finder, and citation formatter (APA, MLA, Chicago).
+
+### 3. Technical Architecture
+*   **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts.
+*   **Backend:** Express.js on Node with TypeScript.
+*   **AI Engine:** Google Gemini 3.5 API via `@google/genai` SDK.
+*   **File Processing:** Direct base64 PDF stream parsing via Gemini, DOCX parsing via `mammoth.js`.
+
+</details>
 
 ---
 
