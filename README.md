@@ -14,33 +14,13 @@
 
 ## Product Requirements Document (PRD)
 
-### 12. Risks & Mitigations
-| Risk | Impact | Mitigation |
-| :--- | :--- | :--- |
-| **False positives or negatives in AI detection** | High, especially for educators who rely on this as evidence. | Frame results as probabilistic evidence with sentence-level detail, not a final verdict, and encourage a human to make the final call. |
-| **Everything depends on one AI provider (Gemini)** | Medium, an outage or pricing change hits core functionality directly. | Build the AI-calling layer so it can support other model providers down the line, not just Gemini. |
-| **Large files are slow or expensive to analyze** | Medium, hurts the experience for longer documents. | Chunk long documents automatically, or set a soft length limit with a clear message to the user. |
-| **No accounts or persistent storage** | Low to medium, users lose history when they switch sessions or devices. | Call this out clearly as a current limitation, and look at optional persistence in a later release. |
+> **About this Document:** This Product Requirements Document (PRD) defines the core specifications, target personas, technical architecture, and roadmap for the AuthentiScribe writing workspace. It details the design to keep AI detection, plagiarism audit, and humanized rewriting within a single unified workspace.
 
----
+👉 **[View Full PRD Document in New Tab (PDF)](assets/AUTHENTISCRIBE_PRD.pdf)**
 
-### 13. Roadmap
-| Phase | What's in it | Target |
-| :--- | :--- | :--- |
-| **Phase 1: Core (shipped)** | Detection suite, highlight viewer, humanizer, PDF and DOCX ingestion, editorial toolkit, citation assistant. | Complete |
-| **Phase 2: Reliability** | Support for more than one AI provider, tighter schema validation, better performance on large files. | Near-term |
-| **Phase 3: Persistence** | Optional accounts with server-side history for documents and reports. | Mid-term |
-| **Phase 4: Integrations** | LMS integrations, a browser extension, and API access for outside tools. | Long-term |
-
----
-
-### 14. Appendix
-*   **Repository:** `github.com/SatyamPandey07/AUTHENTISCRIBE`
-*   **License:** Apache-2.0
-*   **Runtime:** Node.js v18 or higher
-*   **Setup:** requires a `GEMINI_API_KEY` environment variable; `PORT` is optional and defaults to 3000.
-
-</details>
+<iframe src="assets/AUTHENTISCRIBE_PRD.pdf" width="100%" height="600px" style="border: none; border-radius: 8px;">
+  <p>Your browser does not support PDF embeds. You can download and read the document directly: <a href="assets/AUTHENTISCRIBE_PRD.pdf" target="_blank">Open PRD PDF</a>.</p>
+</iframe>
 
 ---
 
